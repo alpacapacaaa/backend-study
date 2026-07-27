@@ -1,22 +1,25 @@
-# 백엔드 전반 학습 스터디
+# Study with me (Backend)
 
-프론트엔드와 API 명세는 공통으로 사용하고, 각 참여자가 자신이 원하는 백엔드
+프론트엔드와 API 명세는 공통으로 사용하고, 각자 자신이 원하는 백엔드
 프레임워크(Go+Echo, Spring Boot, NestJS, Django 등 무엇이든)로 같은 명세를
 구현해서 같은 프론트에 붙여보는 스터디입니다.
-
-- **바뀌지 않는 것**: `frontend/`, `openapi.yaml`
-- **각자 다른 것**: 자신의 백엔드 구현 (`backend-<이름>/` 폴더)
 
 5주 동안 주당 3개씩, 총 15개 기능을 난이도 순(A→Z)으로 쌓습니다. 매주 새 기능이
 추가되면 `openapi.yaml`, `mock-server/`, `frontend/`도 그 주차 범위만큼 함께
 갱신됩니다.
+
+claude code, codex 같은 코딩 에이전트는 절대 사용하지 않고
+막히는 부분이 있다면 IDE 밖에서 독립된 AI를 사용하기를 추천합니다.
+
+backend-example 폴더에 예시를 구현해놨으니 참고해도 좋습니다!
+프로젝트 시작 전까지 본인이 맡은 언어로 백엔드를 맡았을 때 1인분을 할 수 있게끔 하는것이 목표입니다.
 
 ## 저장소 구조
 
 ```
 project-root/
 ├── frontend/              # 공통 프론트엔드 (Next.js + TypeScript)
-├── openapi.yaml           # API 명세 (진실의 원천, 매주 갱신됨)
+├── openapi.yaml           # API 명세 (매주 갱신됨)
 ├── mock-server/           # 명세 기반 mock 서버 (백엔드 없이 프론트 검증용)
 ├── backend-example/       # 예시 백엔드 구현 (참고용)
 ├── backend-<본인이름>/    # 각자 새로 만드는 자신의 백엔드 구현
@@ -72,15 +75,14 @@ cd frontend && npm install && npm run dev    # http://localhost:3000
 
 ## 명세(`openapi.yaml`) 준수 규칙
 
-- `openapi.yaml`은 **이 스터디의 유일한 계약(진실의 원천)**입니다. 프론트는
+- `openapi.yaml`은 **변경 금지**입니다. 프론트는
   이 명세만 믿고 어떤 백엔드와도 연결될 수 있어야 합니다.
 - 명세가 애매하거나 빠진 부분이 있으면 **임의로 해석해서 구현하지 말고**,
-  PR을 올려 논의한 뒤 `openapi.yaml`부터 수정하고 나서 각자 구현에
-  반영하세요. (명세 변경 → 구현 순서를 반드시 지킬 것)
+  작성자에게 말씀해주시면 감사하겠습니다. (명세 변경 → 구현 순서를 반드시 지킬 것)
 - 각자의 백엔드는 **반드시 서로 다른 포트**를 사용합니다. (`openapi.yaml`의
   `servers` 목록에 자신의 포트를 예시로 추가해도 좋습니다.)
 
-## ⚠️ 명세에서 특히 자주 어긋나는 부분 (체크리스트)
+## 명세에서 특히 자주 어긋나는 부분 (체크리스트)
 
 구현 전/후로 꼭 확인하세요. 이 네 가지는 실제로 프론트-백엔드 연결에서
 가장 흔하게 문제가 되는 지점입니다.
@@ -93,10 +95,3 @@ cd frontend && npm install && npm run dev    # http://localhost:3000
       나가는가? (타임존 누락, 로컬 시간, epoch 숫자 등 금지)
 - [ ] **HTTP 상태 코드**: 성공(200/201/204)과 실패(400/401/403/404/409/500)를
       명세대로 구분해서 반환하는가?
-
-## 각 폴더 소개
-
-- [`openapi.yaml`](./openapi.yaml) — API 명세. 매주 그 주차 기능이 이어서 추가됩니다.
-- [`mock-server/`](./mock-server) — Express 기반 mock 서버. 실행법은 폴더 내 README 참고.
-- [`frontend/`](./frontend) — Next.js + TypeScript 공통 프론트엔드.
-- [`backend-example/`](./backend-example) — (선택) 예시 백엔드 구현이 추가될 폴더.
