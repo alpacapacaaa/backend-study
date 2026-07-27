@@ -1,4 +1,4 @@
-# Study with me (Backend)
+# Study with me(Backend)
 
 프론트엔드와 API 명세는 공통으로 사용하고, 각자 자신이 원하는 백엔드
 프레임워크(Go+Echo, Spring Boot, NestJS, Django 등 무엇이든)로 같은 명세를
