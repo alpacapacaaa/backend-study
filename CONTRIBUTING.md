@@ -1,3 +1,30 @@
+## 제출 방법
+
+각자 자신의 이름으로 브랜치를 파서, 그 브랜치에 자신의 백엔드 구현을 커밋합니다.
+
+```bash
+git checkout main
+git pull origin main
+git checkout -b backend-<본인이름>   # 예: backend-seonung
+
+mkdir backend-<본인이름>
+cd backend-<본인이름>
+# 구현 진행...
+
+git add backend-<본인이름>
+git commit -m "feat: <언어/프레임워크> 백엔드 1주차 구현"
+git push origin backend-<본인이름>
+```
+
+- **브랜치 이름 = 폴더 이름**을 동일하게 맞춥니다. (`backend-<본인이름>`)
+- 매주 마감일까지 자신의 브랜치에 push하고, PR을 열어서 제출합니다.
+  - PR 제목: `feat: <이름> - <주차>주차 제출` (예: `feat: seonung - 1주차 제출`)
+  - base는 `main`, compare는 `backend-<본인이름>`으로 엽니다.
+- PR은 **머지하지 않고 열어만 둡니다.** (리뷰/기록용으로 남겨두고, 실제 머지는
+  전체 완료 후 한 번에 정리하거나 스터디장 판단에 따름)
+- 매주 같은 브랜치에 이어서 커밋하면 됩니다. 주차마다 브랜치를 새로 팔 필요는
+  없습니다.
+
 ## 커밋 컨벤션
 
 커밋 메시지는 아래 형식을 따릅니다.
@@ -38,33 +65,6 @@ main                        ← 항상 정상 동작하는 상태만 유지
 
 - 각자 자신의 `backend-<이름>` 브랜치에서만 작업합니다.
 - 다른 사람의 `backend-<이름>` 폴더는 건드리지 않습니다.
-
-## 제출 방법
-
-각자 자신의 이름으로 브랜치를 파서, 그 브랜치에 자신의 백엔드 구현을 커밋합니다.
-
-```bash
-git checkout main
-git pull origin main
-git checkout -b backend-<본인이름>   # 예: backend-seonung
-
-mkdir backend-<본인이름>
-cd backend-<본인이름>
-# 구현 진행...
-
-git add backend-<본인이름>
-git commit -m "feat: <언어/프레임워크> 백엔드 1주차 구현"
-git push origin backend-<본인이름>
-```
-
-- **브랜치 이름 = 폴더 이름**을 동일하게 맞춥니다. (`backend-<본인이름>`)
-- 매주 마감일까지 자신의 브랜치에 push하고, PR을 열어서 제출합니다.
-  - PR 제목: `feat: <이름> - <주차>주차 제출` (예: `feat: seonung - 1주차 제출`)
-  - base는 `main`, compare는 `backend-<본인이름>`으로 엽니다.
-- PR은 **머지하지 않고 열어만 둡니다.** (리뷰/기록용으로 남겨두고, 실제 머지는
-  전체 완료 후 한 번에 정리하거나 스터디장 판단에 따름)
-- 매주 같은 브랜치에 이어서 커밋하면 됩니다. 주차마다 브랜치를 새로 팔 필요는
-  없습니다.
 
 ## 기타 주의할 점
 
