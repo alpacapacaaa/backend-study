@@ -38,34 +38,38 @@ cd project-root
 - **`README.md`** — CORS 허용 / 에러 응답 포맷(`{ "error": "메시지" }`) / 날짜 형식
   (ISO 8601, `2026-07-27T10:00:00Z`) 체크리스트 확인. 실제로 가장 많이 어긋나는 부분입니다.
 
-## 3. 내 백엔드 폴더 만들기
+## 3. 템플릿 복사해서 내 폴더 만들기
+
+`backend-template-springboot/`는 CORS, 공통 에러 포맷, 프로젝트 골격이 이미 완성되어
+있고 각 엔드포인트가 TODO로 비워져 있는 스타터입니다. 이걸 복사해서 시작하면
+"프로젝트 뼈대 만들기" 과정 전체를 건너뛸 수 있습니다.
 
 ```powershell
-mkdir backend-내이름
+xcopy /E /I backend-template-springboot backend-내이름
 cd backend-내이름
 code .
 ```
 
-## 4. Spring Boot 프로젝트 뼈대 생성 (VS Code 안에서)
+(탐색기에서 `backend-template-springboot` 폴더를 복사 → 붙여넣기 → 이름을
+`backend-내이름`으로 바꿔도 동일합니다.)
 
-1. `Ctrl+Shift+P` → **"Spring Initializr: Create a Maven Project"** 검색 후 실행
-2. 순서대로 선택:
-   - Language: **Java**
-   - Spring Boot 버전: 안정 버전(SNAPSHOT 아닌 것) 중 최신
-   - groupId / artifactId: 자유롭게 (예: `com.study` / `backend-내이름`)
-   - Java 버전: **21**
-   - Dependencies: **Spring Web** 추가하고 완료
-3. 저장 위치를 `backend-내이름` 폴더로 지정
-4. 생성 완료 후 "새 창에서 열지" 물어보면 **Open**
+> 완전히 처음부터 직접 만들어보고 싶다면 템플릿 없이 `start.spring.io`나 VS Code의
+> **"Spring Initializr: Create a Maven Project"** 명령으로 새로 생성해도 됩니다.
+> 다만 그 경우 CORS/에러 포맷 처리를 직접 추가해야 합니다.
 
-## 5. 뼈대가 켜지는지부터 확인
+## 4. 켜지는지부터 확인 (바로 켜집니다)
 
-1. `src/main/java/.../XxxApplication.java` 파일 열기
-2. `public static void main(...)` 줄 위에 뜨는 **Run** 코드렌즈 클릭
+1. VS Code 우측 하단에 뜨는 Java 의존성 다운로드 진행 알림이 끝날 때까지 대기
+2. `src/main/java/.../BackendTemplateApplication.java` 파일 열기
+3. `public static void main(...)` 줄 위에 뜨는 **Run** 코드렌즈 클릭
    (또는 왼쪽 사이드바 **Spring Boot Dashboard**에서 앱 이름 옆 ▶ 클릭)
-3. 하단 터미널에 `Tomcat started on port 8080` 같은 로그가 뜨면 성공
-4. 브라우저로 `http://localhost:8080` 접속 → 아직 라우트를 안 만들었으니 에러 페이지가
-   떠도 정상입니다. **"서버 프로세스가 켜졌다"**는 것만 확인하는 단계예요.
+4. 하단 터미널에 `Tomcat started on port 8080` 같은 로그가 뜨면 성공
+5. PowerShell에서 확인:
+   ```powershell
+   curl.exe http://localhost:8080/todos
+   # {"error":"TODO: GET /todos (필터/정렬) 를 구현하세요."} 가 뜨면 정상입니다.
+   #   (아직 아무 것도 구현 안 했다는 뜻이지, 에러가 아니에요)
+   ```
 
 터미널에서 직접 실행하고 싶으면:
 
@@ -73,7 +77,7 @@ code .
 mvnw.cmd spring-boot:run
 ```
 
-## 6. 기본 설정: 포트 + CORS
+## 5. 포트만 내 것으로 바꾸기
 
 `src/main/resources/application.properties`:
 
@@ -82,26 +86,23 @@ server.port=8082
 ```
 
 > 포트는 `openapi.yaml`의 `servers` 목록을 참고해서 다른 참여자와 겹치지 않게 정하세요.
+> CORS는 `WebConfig.java`에 이미 설정되어 있어서 안 건드려도 됩니다.
 
-CORS 허용 설정도 필요합니다 (프론트가 `http://localhost:3000`에서 요청을 보내므로).
-`backend-example/src/main/java/.../WebConfig.java`를 열어 구조를 참고해서 비슷하게
-클래스를 하나 추가하세요.
+## 6. TODO를 하나씩 채워서 구현
 
-## 7. 엔드포인트를 하나씩 구현
+`TodoController.java`, `FileController.java`를 열면 메서드마다 TODO 주석과 함께
+`throw ApiException.todo("...")`가 있습니다. 위에서부터 순서대로, **하나 채울 때마다
+바로 재실행해서 curl로 확인**하세요.
 
-한 번에 다 만들려 하지 말고 아래 순서로, **하나 만들 때마다 바로 실행해서 확인**하세요.
-
-1. `GET /todos` — 우선 빈 배열이라도 반환 (라우팅이 제대로 연결됐는지 확인용)
+1. `GET /todos` (필터/정렬)
 2. `POST /todos`
 3. `GET /todos/{id}`, `PATCH /todos/{id}`, `DELETE /todos/{id}`
-4. 필터(`completed`) / 정렬(`sort`, `order`) 쿼리 파라미터 처리
-5. 파일 업로드/다운로드 (`/files`)
+4. `POST /files` (업로드), `GET /files/{id}` (다운로드), `DELETE /files/{id}`
 
-막히면 `backend-example/`(참고용 Spring Boot 구현)의 `TodoController.java`,
-`FileController.java`를 열어 구조만 참고하세요. 그대로 베끼기보다 "이런 식으로
-처리하는구나" 정도로 보는 걸 추천합니다.
+막히면 `backend-example/`(완성된 Spring Boot 답안)의 같은 파일을 열어 구조만
+참고하세요. 그대로 베끼기보다 "이런 식으로 처리하는구나" 정도로 보는 걸 추천합니다.
 
-## 8. 테스트하기 — Windows 셸별 주의사항
+## 7. 테스트하기 — Windows 셸별 주의사항
 
 Windows에서는 셸에 따라 `curl` 동작이 달라서 헷갈리기 쉽습니다.
 
@@ -124,7 +125,7 @@ curl.exe -X POST http://localhost:8082/todos -H "Content-Type: application/json"
 - [ ] 에러 응답이 `{ "error": "메시지" }` 형태인가
 - [ ] 날짜가 `2026-07-27T10:00:00Z` 형태(ISO 8601, UTC)인가
 
-## 9. 프론트엔드와 연결해서 최종 확인
+## 8. 프론트엔드와 연결해서 최종 확인
 
 `frontend/.env.local`:
 
@@ -141,7 +142,7 @@ npm run dev   # http://localhost:3000
 브라우저에서 Todo 생성/체크/삭제, 필터/정렬, 이미지 업로드까지 직접 눌러보면서 확인하면
 1주차 완성입니다.
 
-## 10. 마무리
+## 9. 마무리
 
 `backend-내이름/README.md`에 아래 내용을 남겨두세요.
 
