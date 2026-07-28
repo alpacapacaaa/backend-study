@@ -76,6 +76,43 @@ project-root/
    - 필요한 환경변수 목록과 예시 값
    - 실행 명령어와 기본 포트
 
+
+## Swagger UI로 명세 보면서 확인하기
+
+`openapi.yaml`을 브라우저에서 보기 좋게 렌더링해서, 각 엔드포인트를 펼쳐 값을 입력하고
+바로 실제 요청까지 날려볼 수 있는 도구입니다. TODO를 하나씩 채울 때마다 이걸로 확인하면
+curl보다 눈으로 보기 편합니다.
+
+### 1. 실행하기
+
+**꼭 `openapi.yaml`이 있는 프로젝트 루트에서** 실행하세요 (백엔드 폴더 안에서 실행하면
+파일을 못 찾습니다).
+
+```bash
+cd backend-study   # openapi.yaml이 있는 최상위 폴더
+npx -y swagger-ui-watcher openapi.yaml --port 8001 --host localhost
+```
+
+터미널에
+`Listening on http://localhost:8001`이 뜨면 성공, 브라우저에서 그 주소로 접속하세요.
+`openapi.yaml`이 바뀌면 자동으로 새로고침되니 계속 켜둬도 됩니다.
+
+### 2. 내 백엔드 포트로 연결하기
+
+화면 상단 "Servers" 드롭다운에서 `http://localhost:{port}` 항목을 선택하면, 바로 아래
+`port` 입력창이 나타납니다. 여기에 본인 백엔드가 실행 중인 포트(템플릿 기본값 `8083`,
+바꿨다면 그 값)를 입력하세요.
+
+### 3. TODO 채우고 → Swagger UI에서 확인, 반복
+
+1-1(Go). `todo.go`/`file.go`에서 TODO 하나를 실제 로직으로 채움
+1-2(Spring). `TodoController.java`/`FileController.java`에서 TODO 하나를 실제 로직으로 채움
+2-1(Go). 서버 재시작 (`Ctrl+C` → `go run .`) 
+2-2(Spring). 서버 재시작 (`Ctrl+C` → `./mvnw spring-boot:run`)
+3. Swagger UI에서 방금 구현한 엔드포인트를 펼치고 "Try it out" → 값 입력 → "Execute"
+4. 상태 코드/응답 바디가 명세대로 나오는지 확인
+5. 다음 TODO로 이동, 반복
+
 ### mock 서버로 프론트 먼저 확인해보기
 
 아직 자신의 백엔드가 없어도 프론트 동작을 먼저 볼 수 있습니다.
