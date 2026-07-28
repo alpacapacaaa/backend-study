@@ -56,13 +56,13 @@ curl보다 눈으로 보기 편합니다.
 
 ```bash
 cd backend-study   # openapi.yaml이 있는 최상위 폴더
-npx -y swagger-ui-watcher openapi.yaml --port 8001
+npx -y swagger-ui-watcher openapi.yaml --port 8001 --host localhost
 ```
 
-터미널에 `Listening on http://127.0.0.1:8001`이 뜨면 성공. 브라우저에서
-**`http://localhost:8001`**로 접속하세요 (`127.0.0.1`이 아니라 `localhost`로 접속해야
-아래 CORS 설정과 맞습니다). `openapi.yaml`이 바뀌면 자동으로 새로고침되니 계속 켜둬도
-됩니다.
+`--host localhost`를 꼭 붙이세요 (안 붙이면 기본값이 `127.0.0.1`이라, 아래 CORS 허용
+목록의 `localhost:8001`과 origin이 달라져서 계속 막힙니다). 터미널에
+`Listening on http://localhost:8001`이 뜨면 성공, 브라우저에서 그 주소로 접속하세요.
+`openapi.yaml`이 바뀌면 자동으로 새로고침되니 계속 켜둬도 됩니다.
 
 ### 2. 내 백엔드 포트로 연결하기
 
@@ -78,19 +78,13 @@ npx -y swagger-ui-watcher openapi.yaml --port 8001
 4. 상태 코드/응답 바디가 명세대로 나오는지 확인
 5. 다음 TODO로 이동, 반복
 
-### 4. CORS 에러가 뜨면
+### 4. CORS
 
-Swagger UI의 "Execute"는 브라우저에서 실제 요청을 보내는 방식이라, 지금 CORS 설정이
-프론트(`http://localhost:3000`)만 허용하고 있으면 막힙니다. **테스트하는 동안만**
-`main.go`에 Swagger UI 주소를 추가하세요.
-
-```go
-AllowOrigins: []string{"http://localhost:3000", "http://localhost:8001"},
-```
-
-고치고 서버 재시작하면 됩니다. **제출 전에는 `http://localhost:8001` 부분을 다시
-지워주세요** — 명세가 요구하는 건 `localhost:3000` 허용이지, 테스트용 origin을 남겨둘
-필요는 없습니다.
+`main.go`의 CORS 허용 목록에 Swagger UI 테스트용 origin(`http://localhost:8001`,
+`http://127.0.0.1:8001`)이 프론트 origin과 함께 이미 등록되어 있어서 별도 설정 없이
+바로 "Execute"가 됩니다. **제출 전에는 이 두 줄을 지우고 `http://localhost:3000`만
+남겨주세요** — 명세가 요구하는 건 그것뿐이고, 테스트용 origin을 제출물에 남길 필요는
+없습니다.
 
 ## 완료 체크리스트
 

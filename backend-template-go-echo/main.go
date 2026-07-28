@@ -13,7 +13,7 @@ func main() {
 
 	// openapi.yaml 상단 CORS 정책: 프론트 origin(http://localhost:3000)을 반드시 허용
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{"http://localhost:3000"},
+		AllowOrigins: []string{"http://localhost:3000", "http://localhost:8001", "http://127.0.0.1:8001"},
 		AllowMethods: []string{http.MethodGet, http.MethodPost, http.MethodPatch, http.MethodPut, http.MethodDelete, http.MethodOptions},
 		AllowHeaders: []string{"Content-Type", "Authorization"},
 	}))
