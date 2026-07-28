@@ -56,8 +56,7 @@ cd backend-study   # openapi.yaml이 있는 최상위 폴더
 npx -y swagger-ui-watcher openapi.yaml --port 8001 --host localhost
 ```
 
-`--host localhost`를 꼭 붙이세요 (안 붙이면 기본값이 `127.0.0.1`이라, 아래 CORS 허용
-목록의 `localhost:8001`과 origin이 달라져서 계속 막힙니다). 터미널에
+터미널에
 `Listening on http://localhost:8001`이 뜨면 성공, 브라우저에서 그 주소로 접속하세요.
 `openapi.yaml`이 바뀌면 자동으로 새로고침되니 계속 켜둬도 됩니다.
 
@@ -77,8 +76,6 @@ npx -y swagger-ui-watcher openapi.yaml --port 8001 --host localhost
 
 ### 4. CORS
 
-`WebConfig.java`의 CORS 허용 목록에 Swagger UI 테스트용 origin(`http://localhost:8001`,
-`http://127.0.0.1:8001`)이 프론트 origin과 함께 이미 등록되어 있어서 별도 설정 없이
 바로 "Execute"가 됩니다. **제출 전에는 이 두 origin을 지우고 `http://localhost:3000`만
 남겨주세요** — 명세가 요구하는 건 그것뿐이고, 테스트용 origin을 제출물에 남길 필요는
 없습니다.

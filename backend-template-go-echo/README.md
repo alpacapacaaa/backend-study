@@ -59,8 +59,7 @@ cd backend-study   # openapi.yaml이 있는 최상위 폴더
 npx -y swagger-ui-watcher openapi.yaml --port 8001 --host localhost
 ```
 
-`--host localhost`를 꼭 붙이세요 (안 붙이면 기본값이 `127.0.0.1`이라, 아래 CORS 허용
-목록의 `localhost:8001`과 origin이 달라져서 계속 막힙니다). 터미널에
+터미널에
 `Listening on http://localhost:8001`이 뜨면 성공, 브라우저에서 그 주소로 접속하세요.
 `openapi.yaml`이 바뀌면 자동으로 새로고침되니 계속 켜둬도 됩니다.
 
