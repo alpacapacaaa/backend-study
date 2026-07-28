@@ -1,12 +1,14 @@
 use axum::{
-    routing::get,
+    routing::{get, post, put, delete},
     Router,
 };
 use std::net::SocketAddr;
 
 #[tokio::main]
 async fn main() {
-    let app = Router::new().route("/", get(|| async { "Hello, World!" }));
+    let app = Router::new()
+        .route("/", get(|| async { "Hello, World!" }));
+        
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 8082));
     println!("Listening on {}", addr);
