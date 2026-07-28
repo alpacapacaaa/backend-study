@@ -43,8 +43,12 @@ servers:
     description: 예시 - Go(Echo) 구현체
   - url: http://localhost:8081
     description: 예시 - Spring Boot 구현체
-  - url: http://localhost:8082
-    description: 예시 - 그 외 구현체 (본인 포트로 자유롭게 변경)
+  - url: http://localhost:{port}
+    description: 로컬 - 포트를 직접 입력하세요 (Swagger UI에서 아래 Variables 칸에 입력)
+    variables:
+      port:
+        default: "8082"
+        description: 본인 백엔드가 실행 중인 포트
 
 tags:
   - name: Todos
