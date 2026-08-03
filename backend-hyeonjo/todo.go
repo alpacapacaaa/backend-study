@@ -45,7 +45,7 @@ var (
 // GET /todos
 // 참고: openapi.yaml 의 GET /todos, mock-server/src/todos.js 의 list()
 func listTodos(c echo.Context) error {
-	var filteredTodos []Todo
+	var filteredTodos = make([]Todo, 0) //new로 하면 초기화 안 됨
 
 	// TODO 1: completed 쿼리 파라미터로 필터링하세요 (없으면 전체 반환).
 	completed := c.QueryParam("completed")
