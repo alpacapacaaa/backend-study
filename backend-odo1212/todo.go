@@ -1,9 +1,13 @@
 package main
 
 import (
-	"sync"
 
+	"net/http"
+	"sync"
+	"time"
+	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
+
 )
 
 // openapi.yaml components.schemas.Todo 와 대응
@@ -49,11 +53,42 @@ func listTodos(c echo.Context) error {
 
 // POST /todos
 func createTodo(c echo.Context) error {
-	// TODO 1: title이 비어있으면 400을 반환하세요.
-	// TODO 2: dueDate 문자열이 ISO 8601 형식인지 확인하세요 (아니면 400).
+	var req TodoCreateRequest
+	if err := c.Bind(&req); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "요청 본문을 읽을 수 없습니다.")
+	}
+
+	// TODO 1: title이 비어있으면 400을 반환하세여잉
+	if req.Title == "" {
+		return echo.NewHTTPError(http.StatusBadRequest, "title은 필수입니다.")
+	}
+
+	// TODO 2: dueDate 문자열이 ISO 8601 형식인지 확인하세여잉 (아님 400)
+	if req.DueDate != nil {
+		if _, err := time.Parse(time.RFC3339, *req.DueDate); err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, "dueDate는 ISO 8601 형식이어야 합니다.")
+		}
+	}
+
 	// TODO 3: id/createdAt/updatedAt을 채운 Todo를 만들어 todos에 저장하고
-	//         201로 반환하세요. (c.JSON(http.StatusCreated, todo))
-	return notImplemented("POST /todos (생성)")
+	//         201로 반환하시라고요
+	now := time.Now().UTC().Format(time.RFC3339)
+	todo := Todo{
+		ID:          uuid.NewString(),
+		Title:       req.Title,
+		Description: req.Description,
+		Completed:   false,
+		DueDate:     req.DueDate,
+		CreatedAt:   now,
+		UpdatedAt:   now,
+	}
+
+	todosMu.Lock()
+	todos[todo.ID] = todo
+	todosMu.Unlock()
+
+	return c.JSON(http.StatusCreated, todo)
+}
 }
 
 // GET /todos/:id
