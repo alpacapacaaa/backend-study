@@ -7,6 +7,7 @@ use axum::{
     Json,
     extract::{
         multipart::MultipartRejection,
+        rejection::PathRejection,
         Multipart,
         Path,
         State,
@@ -119,8 +120,10 @@ fn validate_image_type(
 
 pub async fn download_file(
     State(state): State<AppState>,
-    Path(file_id): Path<Uuid>,
+    file_id: Result<Path<Uuid>, PathRejection>,
 ) -> Result<Response, ApiError> {
+    let Path(file_id) = file_id.map_err(ApiError::from)?;
+
     let file = {
         let files = state.files.read().await;
 
@@ -149,8 +152,10 @@ pub async fn download_file(
 
 pub async fn delete_file(
     State(state): State<AppState>,
-    Path(file_id): Path<Uuid>,
+    file_id: Result<Path<Uuid>, PathRejection>,
 ) -> Result<StatusCode, ApiError> {
+    let Path(file_id) = file_id.map_err(ApiError::from)?;
+
     let file = {
         let files = state.files.read().await;
 
