@@ -4,8 +4,13 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-axum = "0.8.9"
-tokio = { version = "1.53.1", features = ["macros", "rt-multi-thread", "signal", "fs"] }
+axum = { version = "0.8.9", features = ["multipart"] }
+tokio = { version = "1.53.1", features = ["macros", "rt-multi-thread", "signal", "fs", "sync", "io-util"] }
+tokio-util = { version = "0.7", features = ["io"]}
 chrono = { version = "0.4", features = ["serde"] }
 serde = { version = "1", features = ["derive"]}
 uuid = { version = "1", features = ["v4", "serde"] }
+tower-http = { version = "0.7.0", features = ["cors"] }
+
+[dev-dependencies]
+tower = { version = "0.5", features = ["util"] }
