@@ -31,6 +31,10 @@ func main() {
 	e.GET("/files/:id", downloadFile)
 	e.DELETE("/files/:id", deleteFile)
 
+	// 2주차: 인증 API
+	e.POST("/auth/register", registerUser)
+	e.POST("/auth/login", loginUser)
+
 	// 본인 포트로 바꾸세요. openapi.yaml의 servers 목록에도 추가해두면 좋습니다.
 	// (다른 참여자와 겹치지 않는 포트를 쓰세요)
 	e.Logger.Fatal(e.Start(":8083"))

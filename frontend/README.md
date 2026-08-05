@@ -1,31 +1,28 @@
-# Frontend
+# 2주차 프론트엔드
 
-`openapi.yaml` 명세를 기준으로 만든 공통 프론트엔드입니다 (Next.js + TypeScript).
-이 폴더는 스터디 참여자 전원이 공유하며, 각자의 백엔드는 API 주소만 바꿔서
-그대로 연결합니다.
+회원가입 및 로그인 기능을 위한 프론트엔드입니다.
 
-## 실행 방법
+## 시작하기
 
 ```bash
 npm install
-npm run dev   # http://localhost:3000
+npm run dev
 ```
 
-## 백엔드 연결하기
+브라우저에서 `http://localhost:3000` 접속
 
-`.env.local`의 `NEXT_PUBLIC_API_URL`만 바꾸면 mock 서버든 자신의 백엔드든
-그대로 붙습니다. (`.env.example`을 복사해서 시작하세요: `cp .env.example .env.local`)
+## 환경변수
+
+`.env.local` 파일 생성:
 
 ```
-NEXT_PUBLIC_API_URL=http://localhost:4000   # mock-server
-NEXT_PUBLIC_API_URL=http://localhost:8080   # 예: 본인 Go 백엔드
+NEXT_PUBLIC_API_URL=http://localhost:8080
 ```
 
-## 구조
+백엔드 주소에 맞게 수정하세요.
 
-- `src/lib/api.ts` — `openapi.yaml`에 대응하는 API 호출 함수 모음 (에러 포맷 공통 처리 포함)
-- `src/types/` — `openapi.yaml`의 `components.schemas`와 대응하는 타입
-- `src/components/` — 화면 단위 컴포넌트 (Todo 목록/필터/정렬, 파일 업로드)
+## 기능
 
-명세와 프론트 동작이 어긋나면 `openapi.yaml`이 항상 우선입니다. 프론트 코드를
-명세에 맞게 고쳐주세요.
+- 회원가입 (`/auth/register`)
+- 로그인 (`/auth/login`)
+- JWT 토큰 확인 (대시보드)

@@ -1,3 +1,22 @@
 .DS_Store
 .vscode/
 .idea/
+
+# Dependencies
+node_modules/
+
+# Next.js
+.next/
+out/
+.env*.local
+
+# Build
+build/
+dist/
+*.tsbuildinfo
+
+# Logs
+*.log
+
+# Mock server uploads
+mock-server/uploads/

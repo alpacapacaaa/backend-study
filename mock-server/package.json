@@ -1,17 +1,15 @@
 {
-  "name": "backend-study-mock-server",
+  "name": "mock-server-week2",
   "version": "1.0.0",
-  "private": true,
-  "description": "openapi.yaml 1주차 명세를 그대로 구현하는 mock 서버 (프론트 개발/검증용)",
-  "type": "commonjs",
+  "description": "2주차 인증 API Mock 서버",
   "main": "src/index.js",
   "scripts": {
-    "start": "node src/index.js",
-    "dev": "node --watch src/index.js"
+    "start": "node src/index.js"
   },
   "dependencies": {
+    "express": "^4.18.2",
     "cors": "^2.8.5",
-    "express": "^4.19.2",
-    "multer": "^2.2.0"
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2"
   }
 }

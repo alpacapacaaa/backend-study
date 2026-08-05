@@ -1,25 +1,62 @@
-import TodoBoard from "@/components/TodoBoard";
-import FileUploadCard from "@/components/FileUploadCard";
-import { API_BASE_URL } from "@/lib/api";
+'use client'
+
+import { useState } from 'react'
+import LoginPage from './login/page'
+import RegisterPage from './register/page'
+import DashboardPage from './dashboard/page'
 
 export default function Home() {
-  return (
-    <div className="flex flex-1 justify-center bg-zinc-50 dark:bg-black">
-      <main className="flex w-full max-w-3xl flex-col gap-8 px-6 py-12 sm:px-10">
-        <header>
-          <h1 className="text-2xl font-bold">백엔드 스터디 — 1주차</h1>
-          <p className="mt-1 text-sm text-black/60 dark:text-white/60">
-            Todo API · 필터/정렬 조회 · 파일 업로드/다운로드
-          </p>
-          <p className="mt-1 text-xs text-black/40 dark:text-white/40">
-            API: {API_BASE_URL}{" "}
-            <span className="opacity-70">(.env.local의 NEXT_PUBLIC_API_URL로 변경)</span>
-          </p>
-        </header>
+  const [view, setView] = useState<'login' | 'register' | 'dashboard'>('login')
+  const [token, setToken] = useState<string | null>(null)
 
-        <TodoBoard />
-        <FileUploadCard />
-      </main>
+  const handleLoginSuccess = (newToken: string) => {
+    setToken(newToken)
+    setView('dashboard')
+  }
+
+  const handleLogout = () => {
+    setToken(null)
+    setView('login')
+  }
+
+  if (view === 'dashboard' && token) {
+    return <DashboardPage token={token} onLogout={handleLogout} />
+  }
+
+  return (
+    <div>
+      <div style={{ marginBottom: '2rem' }}>
+        <button
+          onClick={() => setView('login')}
+          style={{
+            marginRight: '1rem',
+            padding: '0.5rem 1rem',
+            background: view === 'login' ? '#0070f3' : '#e0e0e0',
+            color: view === 'login' ? 'white' : 'black',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+          }}
+        >
+          로그인
+        </button>
+        <button
+          onClick={() => setView('register')}
+          style={{
+            padding: '0.5rem 1rem',
+            background: view === 'register' ? '#0070f3' : '#e0e0e0',
+            color: view === 'register' ? 'white' : 'black',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+          }}
+        >
+          회원가입
+        </button>
+      </div>
+
+      {view === 'login' && <LoginPage onSuccess={handleLoginSuccess} />}
+      {view === 'register' && <RegisterPage onRegister={() => setView('login')} />}
     </div>
-  );
+  )
 }

@@ -1,33 +1,26 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import type { Metadata } from 'next'
+import './globals.css'
 
 export const metadata: Metadata = {
-  title: "백엔드 스터디",
-  description: "프론트 공통 + 멀티 백엔드 구현 스터디용 프론트엔드",
-};
+  title: '2주차 - 인증',
+  description: '회원가입 및 로그인',
+}
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: {
+  children: React.ReactNode
+}) {
   return (
-    <html
-      lang="ko"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col">{children}</body>
+    <html lang="ko">
+      <body>
+        <header style={{ padding: '1rem', background: '#f0f0f0' }}>
+          <h1 style={{ margin: 0 }}>2주차 - 인증</h1>
+        </header>
+        <main style={{ padding: '2rem', maxWidth: '800px', margin: '0 auto' }}>
+          {children}
+        </main>
+      </body>
     </html>
-  );
+  )
 }
