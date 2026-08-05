@@ -1,0 +1,12 @@
+com/backendstudy/template/TodoController$CreateRequest.class
+com/backendstudy/template/WebConfig.class
+com/backendstudy/template/TodoController$UpdateRequest.class
+com/backendstudy/template/GlobalExceptionHandler.class
+com/backendstudy/template/Todo.class
+com/backendstudy/template/FileController$FileMeta.class
+com/backendstudy/template/TodoController.class
+com/backendstudy/template/FileController.class
+com/backendstudy/template/ApiException.class
+com/backendstudy/template/ErrorResponse.class
+com/backendstudy/template/FileController$StoredFile.class
+com/backendstudy/template/BackendTemplateApplication.class
