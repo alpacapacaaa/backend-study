@@ -31,46 +31,143 @@ export default function RegisterPage({ onRegister }: RegisterPageProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} style={{ maxWidth: '400px' }}>
-      <h2>회원가입</h2>
-      
+    <form onSubmit={handleSubmit}>
+      <div style={{ marginBottom: '2rem', textAlign: 'center' }}>
+        <div style={{ 
+          width: '48px',
+          height: '48px',
+          background: 'var(--success)',
+          borderRadius: '12px',
+          margin: '0 auto 1rem',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <line x1="19" y1="8" x2="19" y2="14"/>
+            <line x1="22" y1="11" x2="16" y2="11"/>
+          </svg>
+        </div>
+        <h2 style={{ 
+          fontSize: '1.5rem',
+          fontWeight: 700,
+          color: 'var(--text-primary)',
+          marginBottom: '0.5rem',
+        }}>
+          회원가입
+        </h2>
+        <p style={{ 
+          fontSize: '0.875rem',
+          color: 'var(--text-secondary)',
+        }}>
+          새로운 계정을 만들어보세요
+        </p>
+      </div>
+
       {error && (
-        <div style={{ padding: '1rem', background: '#fee', color: '#c00', marginBottom: '1rem', borderRadius: '4px' }}>
+        <div style={{ 
+          padding: '0.875rem 1rem',
+          background: '#fef2f2',
+          color: 'var(--error)',
+          marginBottom: '1.25rem',
+          borderRadius: '8px',
+          fontSize: '0.875rem',
+          border: '1px solid #fecaca',
+        }}>
           {error}
         </div>
       )}
 
-      <div style={{ marginBottom: '1rem' }}>
-        <label style={{ display: 'block', marginBottom: '0.5rem' }}>이메일</label>
+      <div style={{ marginBottom: '1.25rem' }}>
+        <label style={{ 
+          display: 'block',
+          marginBottom: '0.5rem',
+          fontSize: '0.875rem',
+          fontWeight: 500,
+          color: 'var(--text-secondary)',
+        }}>
+          이메일
+        </label>
         <input
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ddd' }}
+          placeholder="example@email.com"
+          style={{ 
+            width: '100%',
+            padding: '0.875rem 1rem',
+            borderRadius: '8px',
+            border: '1px solid var(--border)',
+            fontSize: '0.9375rem',
+            outline: 'none',
+            transition: 'border-color 0.2s',
+          }}
+          onFocus={(e) => e.target.style.borderColor = 'var(--primary)'}
+          onBlur={(e) => e.target.style.borderColor = 'var(--border)'}
         />
       </div>
 
-      <div style={{ marginBottom: '1rem' }}>
-        <label style={{ display: 'block', marginBottom: '0.5rem' }}>비밀번호 (8자 이상)</label>
+      <div style={{ marginBottom: '1.25rem' }}>
+        <label style={{ 
+          display: 'block',
+          marginBottom: '0.5rem',
+          fontSize: '0.875rem',
+          fontWeight: 500,
+          color: 'var(--text-secondary)',
+        }}>
+          비밀번호
+        </label>
         <input
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
           minLength={8}
-          style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ddd' }}
+          placeholder="8자 이상 입력"
+          style={{ 
+            width: '100%',
+            padding: '0.875rem 1rem',
+            borderRadius: '8px',
+            border: '1px solid var(--border)',
+            fontSize: '0.9375rem',
+            outline: 'none',
+            transition: 'border-color 0.2s',
+          }}
+          onFocus={(e) => e.target.style.borderColor = 'var(--primary)'}
+          onBlur={(e) => e.target.style.borderColor = 'var(--border)'}
         />
       </div>
 
-      <div style={{ marginBottom: '1rem' }}>
-        <label style={{ display: 'block', marginBottom: '0.5rem' }}>이름</label>
+      <div style={{ marginBottom: '1.5rem' }}>
+        <label style={{ 
+          display: 'block',
+          marginBottom: '0.5rem',
+          fontSize: '0.875rem',
+          fontWeight: 500,
+          color: 'var(--text-secondary)',
+        }}>
+          이름
+        </label>
         <input
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
           required
-          style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ddd' }}
+          placeholder="홍길동"
+          style={{ 
+            width: '100%',
+            padding: '0.875rem 1rem',
+            borderRadius: '8px',
+            border: '1px solid var(--border)',
+            fontSize: '0.9375rem',
+            outline: 'none',
+            transition: 'border-color 0.2s',
+          }}
+          onFocus={(e) => e.target.style.borderColor = 'var(--primary)'}
+          onBlur={(e) => e.target.style.borderColor = 'var(--border)'}
         />
       </div>
 
@@ -79,13 +176,17 @@ export default function RegisterPage({ onRegister }: RegisterPageProps) {
         disabled={loading}
         style={{
           width: '100%',
-          padding: '0.75rem',
-          background: loading ? '#ccc' : '#0070f3',
+          padding: '0.9375rem',
+          background: loading ? 'var(--text-tertiary)' : 'var(--primary)',
           color: 'white',
           border: 'none',
-          borderRadius: '4px',
-          cursor: loading ? 'not-allowed' : 'pointer',
+          borderRadius: '8px',
+          fontSize: '0.9375rem',
+          fontWeight: 600,
+          transition: 'background 0.2s',
         }}
+        onMouseEnter={(e) => !loading && (e.currentTarget.style.background = 'var(--primary-hover)')}
+        onMouseLeave={(e) => !loading && (e.currentTarget.style.background = 'var(--primary)')}
       >
         {loading ? '가입 중...' : '회원가입'}
       </button>

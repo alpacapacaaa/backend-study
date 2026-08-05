@@ -25,17 +25,27 @@ export default function Home() {
 
   return (
     <div>
-      <div style={{ marginBottom: '2rem' }}>
+      {/* 탭 스위처 */}
+      <div style={{ 
+        display: 'flex',
+        background: 'var(--surface)',
+        borderRadius: '12px',
+        padding: '4px',
+        marginBottom: '1.5rem',
+        boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+      }}>
         <button
           onClick={() => setView('login')}
           style={{
-            marginRight: '1rem',
-            padding: '0.5rem 1rem',
-            background: view === 'login' ? '#0070f3' : '#e0e0e0',
-            color: view === 'login' ? 'white' : 'black',
+            flex: 1,
+            padding: '0.75rem',
+            background: view === 'login' ? 'var(--primary)' : 'transparent',
+            color: view === 'login' ? 'white' : 'var(--text-secondary)',
             border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer',
+            borderRadius: '8px',
+            fontSize: '0.9375rem',
+            fontWeight: 600,
+            transition: 'all 0.2s',
           }}
         >
           로그인
@@ -43,20 +53,31 @@ export default function Home() {
         <button
           onClick={() => setView('register')}
           style={{
-            padding: '0.5rem 1rem',
-            background: view === 'register' ? '#0070f3' : '#e0e0e0',
-            color: view === 'register' ? 'white' : 'black',
+            flex: 1,
+            padding: '0.75rem',
+            background: view === 'register' ? 'var(--primary)' : 'transparent',
+            color: view === 'register' ? 'white' : 'var(--text-secondary)',
             border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer',
+            borderRadius: '8px',
+            fontSize: '0.9375rem',
+            fontWeight: 600,
+            transition: 'all 0.2s',
           }}
         >
           회원가입
         </button>
       </div>
 
-      {view === 'login' && <LoginPage onSuccess={handleLoginSuccess} />}
-      {view === 'register' && <RegisterPage onRegister={() => setView('login')} />}
+      {/* 폼 영역 */}
+      <div style={{
+        background: 'var(--surface)',
+        borderRadius: '16px',
+        padding: '2rem',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+      }}>
+        {view === 'login' && <LoginPage onSuccess={handleLoginSuccess} />}
+        {view === 'register' && <RegisterPage onRegister={() => setView('login')} />}
+      </div>
     </div>
   )
 }

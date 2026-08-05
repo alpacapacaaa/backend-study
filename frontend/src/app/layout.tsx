@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: '2주차 - 인증',
-  description: '회원가입 및 로그인',
+  title: '인증 서비스',
+  description: '안전한 회원가입 및 로그인',
 }
 
 export default function RootLayout({
@@ -14,12 +14,54 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body>
-        <header style={{ padding: '1rem', background: '#f0f0f0' }}>
-          <h1 style={{ margin: 0 }}>2주차 - 인증</h1>
-        </header>
-        <main style={{ padding: '2rem', maxWidth: '800px', margin: '0 auto' }}>
-          {children}
-        </main>
+        <div style={{ 
+          minHeight: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+        }}>
+          <header style={{ 
+            padding: '1rem 1.5rem',
+            background: 'var(--surface)',
+            borderBottom: '1px solid var(--border)',
+            position: 'sticky',
+            top: 0,
+            zIndex: 100,
+          }}>
+            <div style={{ 
+              maxWidth: '480px',
+              margin: '0 auto',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+              <h1 style={{ 
+                fontSize: '1.125rem',
+                fontWeight: 600,
+                color: 'var(--text-primary)',
+                margin: 0,
+              }}>
+                인증 서비스
+              </h1>
+            </div>
+          </header>
+          <main style={{ 
+            flex: 1,
+            padding: '1.5rem',
+            maxWidth: '480px',
+            margin: '0 auto',
+            width: '100%',
+          }}>
+            {children}
+          </main>
+          <footer style={{
+            padding: '1rem',
+            textAlign: 'center',
+            fontSize: '0.75rem',
+            color: 'var(--text-tertiary)',
+          }}>
+            © 2026 Auth Service. All rights reserved.
+          </footer>
+        </div>
       </body>
     </html>
   )
