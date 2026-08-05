@@ -1,8 +1,8 @@
 # backend-template-go-echo
 
-`openapi.yaml` 1주차 명세를 채워나가는 **Go + Echo 스타터 템플릿**입니다.
-CORS, 공통 에러 포맷, 프로젝트 골격은 이미 완성되어 있고, `todo.go`와 `file.go`
-안의 **TODO만 채우면 됩니다.**
+`openapi.yaml` / `2주차api명세.md`의 인증 명세를 채워나가는 **Go + Echo 스타터
+템플릿**입니다. CORS, 공통 에러 포맷, 프로젝트 골격은 이미 완성되어 있고,
+`auth.go` 안의 **TODO만 채우면 됩니다.**
 
 ## 요구 사항
 
@@ -21,27 +21,28 @@ CORS, 공통 에러 포맷, 프로젝트 골격은 이미 완성되어 있고, `
    ```
 3. 아무 엔드포인트나 호출해보세요. 아직 구현을 안 했기 때문에 이렇게 나옵니다.
    ```bash
-   curl http://localhost:8083/todos
-   # {"error":"TODO: GET /todos (필터/정렬) 를 구현하세요."}
+   curl -X POST http://localhost:8083/auth/register
+   # {"error":"TODO: implement registerUser"}
    ```
-4. `todo.go`, `file.go`를 열어서 TODO 주석을 하나씩 실제 로직으로 바꾸세요.
+4. `auth.go`를 열어서 TODO 주석을 하나씩 실제 로직으로 바꾸세요. TODO 옆에
+   구체적으로 어떤 라이브러리/함수를 쓰면 되는지 적어뒀습니다 (`bcrypt`,
+   `github.com/golang-jwt/jwt/v5`, `github.com/google/uuid` — 셋 다 이미
+   `go.mod`에 등록되어 있으니 `import`만 추가하면 됩니다).
    채울 때마다 다시 실행해서 curl로 확인하세요.
 
 ## 이미 되어 있는 것 / 내가 채워야 하는 것
 
 | 이미 되어 있음 (건드릴 필요 없음) | 내가 채워야 함 |
 |---|---|
-| `main.go` — CORS, 라우팅 등록, 서버 부트스트랩 | `todo.go`의 각 핸들러 함수 본문 |
-| `errors.go` — 공통 에러 포맷(`{ "error": "..." }`) 변환 | `file.go`의 각 핸들러 함수 본문 |
-| `Todo`, `FileMeta` 구조체 — 응답 스키마 | |
+| `main.go` — CORS, 라우팅 등록(`/auth/register`, `/auth/login`), 서버 부트스트랩 | `auth.go`의 `registerUser`/`loginUser` 함수 본문 |
+| `errors.go` — 공통 에러 포맷(`{ "error": "..." }`) 변환 | `auth.go` 상단의 `User`/`RegisterRequest`/`LoginRequest`/`UserResponse`/`AuthResponse`/`Claims` 구조체 정의 |
+| `go.mod` — `golang-jwt/jwt`, `golang.org/x/crypto`(bcrypt), `google/uuid` 의존성 | `generateJWT`, `toUserResponse` 함수 |
 
 ## 막힐 때 참고할 것
 
-- `openapi.yaml` — 각 엔드포인트의 정확한 요청/응답 형태 (원본)
-- `mock-server/src/todos.js`, `mock-server/src/files.js` — 같은 명세를 Node/Express로
-  구현한 예시 (로직 흐름 참고용)
-- `backend-example/` — Spring Boot로 완성된 답안. 언어는 다르지만 "필터링을 어떤
-  순서로 검증하는지" 같은 로직 흐름은 그대로 참고할 수 있습니다.
+- `2주차api명세.md`, `openapi.yaml` — 각 엔드포인트의 정확한 요청/응답 형태 (원본)
+- `mock-server/src/index.js` — 같은 명세를 Node/Express로 구현한 예시 (bcrypt 해싱,
+  JWT 발급, 에러 처리 흐름을 그대로 참고할 수 있습니다)
 
 ## Swagger UI로 명세 보면서 확인하기
 
@@ -71,10 +72,12 @@ npx -y swagger-ui-watcher openapi.yaml --port 8001 --host localhost
 
 ### 3. TODO 채우고 → Swagger UI에서 확인, 반복
 
-1. `todo.go`/`file.go`에서 TODO 하나를 실제 로직으로 채움
+1. `auth.go`에서 TODO 하나를 실제 로직으로 채움
 2. 서버 재시작 (`Ctrl+C` → `go run .`)
-3. Swagger UI에서 방금 구현한 엔드포인트를 펼치고 "Try it out" → 값 입력 → "Execute"
-4. 상태 코드/응답 바디가 명세대로 나오는지 확인
+3. Swagger UI에서 `/auth/register` 또는 `/auth/login`을 펼치고 "Try it out" → 값
+   입력 → "Execute"
+4. 상태 코드/응답 바디가 명세대로 나오는지 확인 (201/200뿐 아니라 400/401/409도
+   일부러 틀린 값을 넣어서 확인해보세요)
 5. 다음 TODO로 이동, 반복
 
 ### 4. CORS
@@ -87,14 +90,11 @@ npx -y swagger-ui-watcher openapi.yaml --port 8001 --host localhost
 
 ## 완료 체크리스트
 
-- [ ] `GET /todos` — 필터(`completed`)/정렬(`sort`, `order`) 동작
-- [ ] `POST /todos` — 생성, 잘못된 입력 시 400
-- [ ] `GET /todos/:id` — 조회, 없으면 404
-- [ ] `PATCH /todos/:id` — 부분 수정
-- [ ] `DELETE /todos/:id` — 삭제, 없으면 404
-- [ ] `POST /files` — 업로드, MIME 타입 검증
-- [ ] `GET /files/:id` — 다운로드 (Content-Type 정확히)
-- [ ] `DELETE /files/:id` — 삭제
+- [ ] `POST /auth/register` — 이메일 중복 시 409, 유효성 검사 실패 시 400
+- [ ] 비밀번호 해싱 (`bcrypt`, 응답에 절대 포함하지 않기)
+- [ ] `POST /auth/login` — 이메일/비밀번호 불일치 시 401 (메시지는 동일하게)
+- [ ] JWT 토큰 생성 (HS256, 24시간 만료) 및 `AuthResponse`로 반환
+- [ ] `createdAt`/`updatedAt`이 `2026-08-05T10:00:00Z`처럼 `Z`가 붙은 UTC로 나가는지 확인
 - [ ] `frontend/.env.local`의 `NEXT_PUBLIC_API_URL`을 내 포트로 바꿔서 실제 화면에서 확인
 - [ ] `main.go`의 포트를 다른 참여자와 안 겹치는 포트로 변경했는지 확인
 - [ ] 이 README를 내 프로젝트에 맞게 실행법/포트/환경변수로 고쳐쓰기

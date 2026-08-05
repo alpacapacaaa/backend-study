@@ -2,6 +2,8 @@ package com.backendstudy.template;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -18,6 +20,17 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ApiException.class)
     public ResponseEntity<ErrorResponse> handleApiException(ApiException ex) {
         return ResponseEntity.status(ex.getStatus()).body(new ErrorResponse(ex.getMessage()));
+    }
+
+    // @Valid로 검증한 @RequestBody(RegisterRequest, LoginRequest)가 실패했을 때 여기로 옵니다.
+    // 이게 없으면 예외가 아래 handleUnknown()으로 떨어져 400 대신 500이 나갑니다.
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException ex) {
+        String message = ex.getBindingResult().getFieldErrors().stream()
+                .findFirst()
+                .map(FieldError::getDefaultMessage)
+                .orElse("요청 값이 올바르지 않습니다.");
+        return ResponseEntity.badRequest().body(new ErrorResponse(message));
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)

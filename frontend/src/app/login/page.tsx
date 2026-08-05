@@ -2,22 +2,58 @@
 
 import { useState } from 'react'
 import { login } from '@/lib/api'
+import { FormField } from '@/components/FormField'
+import { CheckBox } from '@/components/CheckBox'
+import { PrimaryButton } from '@/components/PrimaryButton'
+import { SwitchLink } from '@/components/SwitchLink'
+import { BackButton } from '@/components/BackButton'
+import { Header } from '@/components/Header'
+import { Footer } from '@/components/Footer'
+import { MailIcon, LockIcon, EyeIcon, EyeOffIcon } from '@/components/icons'
 
 interface LoginPageProps {
   onSuccess: (token: string) => void
+  onBack: () => void
+  onNavigateToRegister: () => void
 }
 
-export default function LoginPage({ onSuccess }: LoginPageProps) {
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+interface FieldErrors {
+  email?: string
+  password?: string
+}
+
+export default function LoginPage({ onSuccess, onBack, onNavigateToRegister }: LoginPageProps) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
+  const [rememberMe, setRememberMe] = useState(false)
   const [error, setError] = useState('')
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({})
   const [loading, setLoading] = useState(false)
+
+  const validate = (): FieldErrors => {
+    const next: FieldErrors = {}
+    if (!email.trim()) next.email = '이메일을 입력해주세요.'
+    else if (!EMAIL_REGEX.test(email)) next.email = `'${email}'에 '@'가 없어요. 올바른 이메일 형식으로 입력해주세요.`
+    if (!password) next.password = '비밀번호를 입력해주세요.'
+    return next
+  }
+
+  const handleBlur = (field: keyof FieldErrors) => {
+    setFieldErrors((prev) => ({ ...prev, [field]: validate()[field] }))
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
-    setLoading(true)
 
+    const validation = validate()
+    setFieldErrors(validation)
+    if (Object.keys(validation).length > 0) return
+
+    setLoading(true)
     try {
       const res = await login({ email, password })
       onSuccess(res.token)
@@ -29,131 +65,107 @@ export default function LoginPage({ onSuccess }: LoginPageProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div style={{ marginBottom: '2rem', textAlign: 'center' }}>
-        <div style={{ 
-          width: '48px',
-          height: '48px',
-          background: 'var(--primary)',
-          borderRadius: '12px',
-          margin: '0 auto 1rem',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
-          </svg>
+    <div style={{
+      minHeight: '100vh',
+      width: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      background: 'var(--bg)',
+      padding: '32px 24px 56px',
+    }}>
+      <div style={{ width: '100%', maxWidth: '400px', marginBottom: '28px' }}>
+        <Header variant="compact" />
+      </div>
+
+      <div className="animate-slide-up" style={{ width: '100%', maxWidth: '400px' }}>
+        <div style={{ marginBottom: '32px' }}>
+          <BackButton onClick={onBack} />
         </div>
-        <h2 style={{ 
-          fontSize: '1.5rem',
-          fontWeight: 700,
-          color: 'var(--text-primary)',
-          marginBottom: '0.5rem',
-        }}>
+
+        <h1 style={{ fontSize: '24px', fontWeight: 700, color: 'var(--ink-900)', marginBottom: '4px' }}>
           로그인
-        </h2>
-        <p style={{ 
-          fontSize: '0.875rem',
-          color: 'var(--text-secondary)',
-        }}>
-          계정에 접속하세요
+        </h1>
+        <p style={{ fontSize: '14px', color: 'var(--ink-500)', marginBottom: '32px' }}>
+          다시 만나서 반가워요
         </p>
-      </div>
 
-      {error && (
-        <div style={{ 
-          padding: '0.875rem 1rem',
-          background: '#fef2f2',
-          color: 'var(--error)',
-          marginBottom: '1.25rem',
-          borderRadius: '8px',
-          fontSize: '0.875rem',
-          border: '1px solid #fecaca',
-        }}>
-          {error}
+        {error && (
+          <div className="animate-fade-in" style={{
+            padding: '12px 14px',
+            background: 'var(--error-soft)',
+            color: 'var(--error)',
+            marginBottom: '20px',
+            borderRadius: '10px',
+            fontSize: '13px',
+            fontWeight: 500,
+          }}>
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} noValidate>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <FormField
+              label="이메일"
+              icon={<MailIcon />}
+              type="email"
+              value={email}
+              onChange={(v) => {
+                setEmail(v)
+                if (fieldErrors.email) setFieldErrors((prev) => ({ ...prev, email: undefined }))
+              }}
+              onBlur={() => handleBlur('email')}
+              placeholder="you@example.com"
+              autoComplete="email"
+              required
+              error={fieldErrors.email}
+            />
+            <FormField
+              label="비밀번호"
+              icon={<LockIcon />}
+              type={showPassword ? 'text' : 'password'}
+              value={password}
+              onChange={(v) => {
+                setPassword(v)
+                if (fieldErrors.password) setFieldErrors((prev) => ({ ...prev, password: undefined }))
+              }}
+              onBlur={() => handleBlur('password')}
+              placeholder="비밀번호 입력"
+              autoComplete="current-password"
+              required
+              error={fieldErrors.password}
+              rightSlot={
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((v) => !v)}
+                  aria-label={showPassword ? '비밀번호 숨기기' : '비밀번호 보기'}
+                  style={{ background: 'none', border: 'none', padding: 0, display: 'flex', color: 'var(--ink-400)', flexShrink: 0 }}
+                >
+                  {showPassword ? <EyeOffIcon width={16} height={16} /> : <EyeIcon width={16} height={16} />}
+                </button>
+              }
+            />
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', margin: '20px 0 28px' }}>
+            <CheckBox checked={rememberMe} onChange={setRememberMe} label="로그인 상태 유지" />
+            <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--primary)', cursor: 'pointer' }}>
+              비밀번호를 잊으셨나요?
+            </span>
+          </div>
+
+          <PrimaryButton type="submit" loading={loading}>
+            {loading ? '로그인 중...' : '로그인'}
+          </PrimaryButton>
+        </form>
+
+        <div style={{ marginTop: '20px' }}>
+          <SwitchLink prompt="계정이 없으신가요?" actionLabel="회원가입" onClick={onNavigateToRegister} />
         </div>
-      )}
 
-      <div style={{ marginBottom: '1.25rem' }}>
-        <label style={{ 
-          display: 'block',
-          marginBottom: '0.5rem',
-          fontSize: '0.875rem',
-          fontWeight: 500,
-          color: 'var(--text-secondary)',
-        }}>
-          이메일
-        </label>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          placeholder="example@email.com"
-          style={{ 
-            width: '100%',
-            padding: '0.875rem 1rem',
-            borderRadius: '8px',
-            border: '1px solid var(--border)',
-            fontSize: '0.9375rem',
-            outline: 'none',
-            transition: 'border-color 0.2s',
-          }}
-          onFocus={(e) => e.target.style.borderColor = 'var(--primary)'}
-          onBlur={(e) => e.target.style.borderColor = 'var(--border)'}
-        />
+        <Footer />
       </div>
-
-      <div style={{ marginBottom: '1.5rem' }}>
-        <label style={{ 
-          display: 'block',
-          marginBottom: '0.5rem',
-          fontSize: '0.875rem',
-          fontWeight: 500,
-          color: 'var(--text-secondary)',
-        }}>
-          비밀번호
-        </label>
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          placeholder="비밀번호 입력"
-          style={{ 
-            width: '100%',
-            padding: '0.875rem 1rem',
-            borderRadius: '8px',
-            border: '1px solid var(--border)',
-            fontSize: '0.9375rem',
-            outline: 'none',
-            transition: 'border-color 0.2s',
-          }}
-          onFocus={(e) => e.target.style.borderColor = 'var(--primary)'}
-          onBlur={(e) => e.target.style.borderColor = 'var(--border)'}
-        />
-      </div>
-
-      <button
-        type="submit"
-        disabled={loading}
-        style={{
-          width: '100%',
-          padding: '0.9375rem',
-          background: loading ? 'var(--text-tertiary)' : 'var(--primary)',
-          color: 'white',
-          border: 'none',
-          borderRadius: '8px',
-          fontSize: '0.9375rem',
-          fontWeight: 600,
-          transition: 'background 0.2s',
-        }}
-        onMouseEnter={(e) => !loading && (e.currentTarget.style.background = 'var(--primary-hover)')}
-        onMouseLeave={(e) => !loading && (e.currentTarget.style.background = 'var(--primary)')}
-      >
-        {loading ? '로그인 중...' : '로그인'}
-      </button>
-    </form>
+    </div>
   )
 }

@@ -1,186 +1,190 @@
 'use client'
 
+import { useState } from 'react'
+import { Footer } from '@/components/Footer'
+
 interface DashboardPageProps {
   token: string
   onLogout: () => void
 }
 
 export default function DashboardPage({ token, onLogout }: DashboardPageProps) {
+  const [copied, setCopied] = useState(false)
+
+  if (!token) return null
+
+  const copyToken = () => {
+    navigator.clipboard.writeText(token)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+
   return (
-    <div>
-      {/* 헤더 */}
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'center', 
-        marginBottom: '1.5rem',
-      }}>
-        <div>
-          <h2 style={{ 
-            fontSize: '1.5rem',
-            fontWeight: 700,
-            color: 'var(--text-primary)',
-            marginBottom: '0.25rem',
-          }}>
-            대시보드
-          </h2>
-          <p style={{ 
-            fontSize: '0.875rem',
-            color: 'var(--text-secondary)',
-          }}>
-            로그인 완료
-          </p>
-        </div>
-        <button
-          onClick={onLogout}
-          style={{
-            padding: '0.5rem 1rem',
-            background: 'var(--surface)',
-            color: 'var(--error)',
-            border: '1px solid var(--border)',
-            borderRadius: '8px',
-            fontSize: '0.875rem',
-            fontWeight: 500,
-            transition: 'all 0.2s',
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = '#fef2f2'
-            e.currentTarget.style.borderColor = 'var(--error)'
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = 'var(--surface)'
-            e.currentTarget.style.borderColor = 'var(--border)'
-          }}
-        >
-          로그아웃
-        </button>
-      </div>
-
-      {/* 성공 카드 */}
-      <div style={{
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        borderRadius: '16px',
-        padding: '1.5rem',
-        marginBottom: '1.5rem',
-        color: 'white',
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1rem' }}>
-          <div style={{
-            width: '40px',
-            height: '40px',
-            background: 'rgba(255,255,255,0.2)',
-            borderRadius: '10px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginRight: '0.75rem',
-          }}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
-              <polyline points="20 6 9 17 4 12"/>
-            </svg>
-          </div>
-          <div>
-            <h3 style={{ 
-              fontSize: '1.125rem',
-              fontWeight: 600,
-              marginBottom: '0.125rem',
-            }}>
-              인증 성공
-            </h3>
-            <p style={{ 
-              fontSize: '0.8125rem',
-              opacity: 0.9,
-            }}>
-              JWT 토큰이 발급되었습니다
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* 토큰 정보 */}
-      <div style={{
-        background: 'var(--surface)',
-        borderRadius: '12px',
-        padding: '1.25rem',
-        boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
-        marginBottom: '1rem',
-      }}>
-        <h4 style={{ 
-          fontSize: '0.875rem',
-          fontWeight: 600,
-          color: 'var(--text-secondary)',
-          marginBottom: '0.75rem',
+    <div style={{
+      minHeight: '100vh',
+      width: '100%',
+      background: 'var(--bg)',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      padding: '40px 24px 60px',
+    }}>
+      <div style={{ width: '100%', maxWidth: '440px' }}>
+        <div className="animate-fade-in" style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'flex-start',
+          marginBottom: '28px',
         }}>
-          액세스 토큰
-        </h4>
-        <pre style={{
-          padding: '1rem',
-          background: 'var(--bg)',
-          border: '1px solid var(--border)',
-          borderRadius: '8px',
-          overflow: 'auto',
-          fontSize: '0.75rem',
-          lineHeight: 1.5,
-          wordBreak: 'break-all',
-          color: 'var(--text-primary)',
-        }}>
-          {token}
-        </pre>
-      </div>
-
-      {/* 사용법 안내 */}
-      <div style={{
-        background: '#f0f9ff',
-        borderRadius: '12px',
-        padding: '1.25rem',
-        border: '1px solid #bae6fd',
-      }}>
-        <div style={{ display: 'flex', alignItems: 'flex-start' }}>
-          <div style={{
-            width: '20px',
-            height: '20px',
-            background: 'var(--primary)',
-            borderRadius: '50%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginRight: '0.75rem',
-            flexShrink: 0,
-            marginTop: '0.125rem',
-          }}>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3">
-              <path d="M12 2v20M2 12h20"/>
-            </svg>
-          </div>
           <div>
-            <p style={{ 
-              fontSize: '0.875rem',
-              fontWeight: 600,
-              color: 'var(--text-primary)',
-              marginBottom: '0.5rem',
-            }}>
-              API 호출 방법
+            <h1 style={{ fontSize: '24px', fontWeight: 700, color: 'var(--ink-900)', marginBottom: '4px' }}>
+              대시보드
+            </h1>
+            <p style={{ fontSize: '13px', color: 'var(--ink-500)' }}>
+              인증이 완료되었습니다
             </p>
-            <p style={{ 
-              fontSize: '0.8125rem',
-              color: 'var(--text-secondary)',
-              marginBottom: '0.5rem',
-            }}>
-              이 토큰을 헤더에 포함하여 인증이 필요한 API를 호출하세요.
-            </p>
-            <code style={{
-              display: 'block',
-              padding: '0.625rem 0.75rem',
+          </div>
+          <button
+            onClick={onLogout}
+            style={{
+              padding: '8px 16px',
               background: 'var(--surface)',
-              borderRadius: '6px',
-              fontSize: '0.75rem',
-              color: 'var(--primary)',
+              color: 'var(--ink-700)',
               border: '1px solid var(--border)',
+              borderRadius: '8px',
+              fontSize: '13px',
+              fontWeight: 600,
+              flexShrink: 0,
+              transition: 'border-color 0.15s',
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.borderColor = 'var(--ink-300)')}
+            onMouseLeave={(e) => (e.currentTarget.style.borderColor = 'var(--border)')}
+          >
+            로그아웃
+          </button>
+        </div>
+
+        <div className="animate-slide-up" style={{
+          background: 'var(--surface)',
+          border: '1px solid var(--border)',
+          borderRadius: '14px',
+          padding: '20px',
+          marginBottom: '16px',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div style={{
+              width: '44px',
+              height: '44px',
+              background: 'var(--primary)',
+              borderRadius: '12px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginRight: '14px',
+              flexShrink: 0,
             }}>
-              Authorization: Bearer {token.substring(0, 20)}...
-            </code>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+            </div>
+            <div>
+              <h2 style={{ fontSize: '16px', fontWeight: 700, color: 'var(--ink-900)', marginBottom: '2px' }}>
+                로그인 성공!
+              </h2>
+              <p style={{ fontSize: '13px', color: 'var(--ink-500)' }}>
+                JWT 토큰이 발급되었습니다
+              </p>
+            </div>
           </div>
         </div>
+
+        <div className="animate-slide-up" style={{
+          background: 'var(--surface)',
+          border: '1px solid var(--border)',
+          borderRadius: '14px',
+          padding: '20px',
+          marginBottom: '16px',
+        }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+            <h3 style={{ fontSize: '12px', fontWeight: 700, color: 'var(--ink-500)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              Access Token
+            </h3>
+            <button
+              onClick={copyToken}
+              style={{
+                padding: '5px 11px',
+                background: copied ? 'var(--success)' : 'var(--primary-soft)',
+                color: copied ? 'white' : 'var(--primary)',
+                border: 'none',
+                borderRadius: '6px',
+                fontSize: '12px',
+                fontWeight: 600,
+                transition: 'all 0.15s',
+              }}
+            >
+              {copied ? '✓ 복사됨' : '복사'}
+            </button>
+          </div>
+          <pre style={{
+            padding: '12px 14px',
+            background: 'var(--surface-subtle)',
+            borderRadius: '10px',
+            overflow: 'auto',
+            fontSize: '11px',
+            lineHeight: 1.6,
+            wordBreak: 'break-all',
+            color: 'var(--ink-700)',
+            maxHeight: '140px',
+            border: '1px solid var(--border)',
+          }}>
+            {token}
+          </pre>
+        </div>
+
+        <div className="animate-slide-up" style={{
+          background: 'var(--primary-soft)',
+          borderRadius: '14px',
+          padding: '20px',
+          border: '1px solid #DBEAFE',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+            <div style={{
+              width: '30px',
+              height: '30px',
+              background: 'var(--primary)',
+              borderRadius: '8px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginRight: '12px',
+              flexShrink: 0,
+            }}>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
+                <path d="M16 18l6-6-6-6M8 6l-6 6 6 6" />
+              </svg>
+            </div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <p style={{ fontSize: '13px', fontWeight: 700, color: 'var(--ink-900)', marginBottom: '10px' }}>
+                API 호출 방법
+              </p>
+              <code style={{
+                display: 'block',
+                padding: '11px 13px',
+                background: 'var(--surface)',
+                borderRadius: '8px',
+                fontSize: '11px',
+                color: 'var(--primary)',
+                border: '1px solid var(--border)',
+                fontFamily: 'monospace',
+                overflowWrap: 'anywhere',
+              }}>
+                Authorization: Bearer {token.substring(0, 20)}...
+              </code>
+            </div>
+          </div>
+        </div>
+
+        <Footer maxWidth="440px" />
       </div>
     </div>
   )

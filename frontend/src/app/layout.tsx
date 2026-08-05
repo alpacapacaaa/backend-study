@@ -1,9 +1,35 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
+import { Geist } from 'next/font/google'
 import './globals.css'
 
+const geist = Geist({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-geist',
+})
+
 export const metadata: Metadata = {
-  title: '인증 서비스',
-  description: '안전한 회원가입 및 로그인',
+  title: {
+    default: '인증 서비스 | 안전한 로그인 & 회원가입',
+    template: '%s | 인증 서비스',
+  },
+  description: '몇 초 만에 가입하고 안전하게 로그인하세요. JWT 기반 인증으로 안전하게 보호됩니다.',
+  keywords: ['인증', '로그인', '회원가입', 'JWT', '보안'],
+  applicationName: '인증 서비스',
+  formatDetection: { telephone: false },
+  robots: { index: true, follow: true },
+  openGraph: {
+    title: '인증 서비스',
+    description: '몇 초 만에 가입하고 안전하게 로그인하세요.',
+    locale: 'ko_KR',
+    type: 'website',
+  },
+}
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  themeColor: '#2563EB',
 }
 
 export default function RootLayout({
@@ -12,56 +38,9 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="ko">
-      <body>
-        <div style={{ 
-          minHeight: '100vh',
-          display: 'flex',
-          flexDirection: 'column',
-        }}>
-          <header style={{ 
-            padding: '1rem 1.5rem',
-            background: 'var(--surface)',
-            borderBottom: '1px solid var(--border)',
-            position: 'sticky',
-            top: 0,
-            zIndex: 100,
-          }}>
-            <div style={{ 
-              maxWidth: '480px',
-              margin: '0 auto',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-              <h1 style={{ 
-                fontSize: '1.125rem',
-                fontWeight: 600,
-                color: 'var(--text-primary)',
-                margin: 0,
-              }}>
-                인증 서비스
-              </h1>
-            </div>
-          </header>
-          <main style={{ 
-            flex: 1,
-            padding: '1.5rem',
-            maxWidth: '480px',
-            margin: '0 auto',
-            width: '100%',
-          }}>
-            {children}
-          </main>
-          <footer style={{
-            padding: '1rem',
-            textAlign: 'center',
-            fontSize: '0.75rem',
-            color: 'var(--text-tertiary)',
-          }}>
-            © 2026 Auth Service. All rights reserved.
-          </footer>
-        </div>
+    <html lang="ko" className={geist.variable}>
+      <body style={{ fontFamily: 'var(--font-geist), -apple-system, BlinkMacSystemFont, sans-serif', minHeight: '100vh', background: 'var(--bg)' }}>
+        {children}
       </body>
     </html>
   )

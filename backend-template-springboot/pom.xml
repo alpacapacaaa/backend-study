@@ -22,6 +22,40 @@
 			<artifactId>spring-boot-starter-webmvc</artifactId>
 		</dependency>
 
+		<!-- @Valid / @Email / @NotBlank / @Size 가 실제로 동작하려면 필요합니다.
+		     (validation-api 인터페이스만으로는 검증이 실행되지 않고, 이 starter가
+		     가져오는 hibernate-validator가 실제 구현체입니다.) -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
+
+		<!-- 비밀번호 해싱용 BCryptPasswordEncoder만 필요하므로 spring-boot-starter-security
+		     전체(필터체인, 기본 로그인 폼 등) 대신 이 최소 의존성만 추가합니다. -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-crypto</artifactId>
+		</dependency>
+
+		<!-- JWT 생성/검증. jjwt-impl, jjwt-jackson은 런타임에만 필요합니다. -->
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-api</artifactId>
+			<version>0.12.6</version>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-impl</artifactId>
+			<version>0.12.6</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-jackson</artifactId>
+			<version>0.12.6</version>
+			<scope>runtime</scope>
+		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-webmvc-test</artifactId>

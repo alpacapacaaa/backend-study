@@ -1,30 +1,22 @@
 package com.backendstudy.template;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
-// TODO: User 엔티티 클래스 정의
-// - id, email, name, password, createdAt, updatedAt 필드
-// - JPA 어노테이션 또는 수동 ID 생성
-
-// TODO: RegisterRequest DTO 정의
-// - email, password, name 필드
-// - 유효성 검증 어노테이션 (@Email, @NotBlank, @Size)
-
-// TODO: LoginRequest DTO 정의
-// - email, password 필드
-
-// TODO: UserResponse DTO 정의
-// - id, email, name, createdAt, updatedAt 필드
-
-// TODO: AuthResponse DTO 정의
-// - token, user 필드
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 2주차 인증 API 컨트롤러
- * 
+ *
  * 학습 포인트:
  * - 사용자 등록 및 비밀번호 해싱 (BCrypt)
  * - JWT 토큰 생성 및 검증
@@ -34,21 +26,26 @@ import java.time.LocalDateTime;
 @RequestMapping("/auth")
 public class AuthController {
 
-    // TODO: UserRepository 또는 인메모리 저장소 주입
-
-    // TODO: PasswordEncoder 주입 (BCrypt)
-
-    // TODO: JWT 토큰 제공자 주입
+    // 인메모리 사용자 저장소
+    private final Map<String, User> users = new ConcurrentHashMap<>();
 
     /**
      * POST /auth/register - 회원가입
-     * 
+     *
      * 구현 단계:
-     * 1. 요청 유효성 검증
-     * 2. 이메일 중복 확인 (409 Conflict)
-     * 3. 비밀번호 해싱 (BCrypt)
-     * 4. 사용자 저장
-     * 5. UserResponse 반환 (201 Created)
+     * 1. 요청 유효성 검증 — @Valid가 자동으로 처리합니다. 실패하면
+     *    GlobalExceptionHandler.handleValidation()이 400으로 변환해주니 따로 처리할 필요 없음.
+     * 2. 이메일 중복 확인 — users.containsKey(request.email())이 true면
+     *    throw new ApiException(HttpStatus.CONFLICT, "이미 등록된 이메일입니다.")
+     * 3. 비밀번호 해싱 — spring-security-crypto의 BCryptPasswordEncoder 사용.
+     *    new BCryptPasswordEncoder().encode(request.password())
+     *    (cost factor는 기본값 10 그대로 사용하면 됨, 학습 목적이라 튜닝 불필요.
+     *     매 요청마다 새로 만들지 말고 필드나 @Bean으로 한 번만 생성해서 재사용할 것)
+     * 4. 사용자 저장 — id는 java.util.UUID.randomUUID().toString(),
+     *    createdAt/updatedAt은 java.time.Instant.now()
+     *    (LocalDateTime이 아니라 Instant를 써야 JSON 응답에 "2026-08-05T10:00:00Z"처럼
+     *     'Z'가 붙은 UTC로 자동 직렬화됩니다 — User.java 필드 타입 참고)
+     * 5. UserResponse로 변환해서 201 Created 반환 (비밀번호 필드는 절대 포함 금지)
      */
     @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest request) {
@@ -59,13 +56,19 @@ public class AuthController {
 
     /**
      * POST /auth/login - 로그인
-     * 
+     *
      * 구현 단계:
-     * 1. 요청 유효성 검증
-     * 2. 사용자 찾기 (없으면 401)
-     * 3. 비밀번호 검증 (BCrypt)
-     * 4. JWT 토큰 생성 (24시간 만료)
-     * 5. AuthResponse 반환 (200 OK)
+     * 1. 요청 유효성 검증 — @Valid
+     * 2. 사용자 찾기 — users.get(request.email())이 null이면
+     *    throw new ApiException(HttpStatus.UNAUTHORIZED, "이메일 또는 비밀번호가 올바르지 않습니다.")
+     *    (이메일이 존재하지 않는 것과 비밀번호가 틀린 것을 같은 메시지로 응답해야
+     *     "가입된 이메일 목록"이 새어나가지 않습니다 — 아래 3번도 실패 시 같은 메시지 사용)
+     * 3. 비밀번호 검증 — new BCryptPasswordEncoder().matches(request.password(), user.getPassword())
+     *    가 false면 위와 동일한 메시지로 401
+     * 4. JWT 토큰 생성 — 아래 JwtProvider의 generateToken(user) 호출.
+     *    HS256, subject=user.getId(), claim("email", user.getEmail()),
+     *    발급시각=now, 만료시각=now + 24시간
+     * 5. AuthResponse(token, userResponse)로 200 OK 반환
      */
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request) {
@@ -75,7 +78,56 @@ public class AuthController {
     }
 }
 
-// TODO: JWT 토큰 제공자 클래스 구현
-// - generateToken(): JWT 생성 (HS256, 24시간 만료)
-// - validateToken(): 토큰 검증
-// - getUserIdFromToken(): 토큰에서 사용자 ID 추출
+// TODO: User 엔티티 채우기 (User.java 파일에 필드 스켈레톤이 이미 있음)
+// - 생성자, getter, setter 구현
+// - createdAt/updatedAt은 Instant 타입 (선언되어 있음, 건드리지 마세요)
+
+// RegisterRequest DTO — 유효성 검증 메시지는 GlobalExceptionHandler가 그대로 꺼내 쓰므로
+// 여기 message 속성이 곧 사용자에게 보이는 에러 문구입니다.
+record RegisterRequest(
+    @Email(message = "올바른 이메일 형식이 아닙니다.")
+    @NotBlank(message = "이메일은 필수입니다.")
+    String email,
+
+    @NotBlank(message = "비밀번호는 필수입니다.")
+    @Size(min = 8, message = "비밀번호는 8자 이상이어야 합니다.")
+    String password,
+
+    @NotBlank(message = "이름은 필수입니다.")
+    String name
+) {}
+
+record LoginRequest(
+    @Email(message = "올바른 이메일 형식이 아닙니다.")
+    @NotBlank(message = "이메일은 필수입니다.")
+    String email,
+
+    @NotBlank(message = "비밀번호는 필수입니다.")
+    String password
+) {}
+
+// TODO: UserResponse DTO 정의
+// record UserResponse(String id, String email, String name, Instant createdAt, Instant updatedAt) {}
+// + User -> UserResponse 변환 함수(예: static 팩토리 메서드 UserResponse.from(User user))
+//   를 만들어서 register/login 양쪽에서 재사용하면 password 노출 실수를 막을 수 있음
+
+// TODO: AuthResponse DTO 정의
+// record AuthResponse(String token, UserResponse user) {}
+
+// TODO: JWT 토큰 제공자 클래스 구현 (예: JwtProvider.java, @Component로 등록)
+// - pom.xml에 추가된 io.jsonwebtoken:jjwt-api/impl/jackson 사용
+// - 시크릿 키는 하드코딩 대신 application.properties의 jwt.secret을
+//   @Value("${jwt.secret}")로 주입받아 사용 (아래 예시는 jjwt 0.12.x 기준 API)
+//
+//   SecretKey key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+//   String token = Jwts.builder()
+//       .subject(user.getId())
+//       .claim("email", user.getEmail())
+//       .issuedAt(new Date())
+//       .expiration(Date.from(Instant.now().plusMillis(expirationMs)))
+//       .signWith(key)
+//       .compact();
+//
+// - generateToken(User user): 위 로직으로 토큰 문자열 반환
+// - validateToken() / getUserIdFromToken(): 이번 주차 필수는 아니지만, 이후 주차에서
+//   "로그인 필요한 API" 만들 때 재사용할 수 있으니 미리 만들어두면 편함
