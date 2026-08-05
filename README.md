@@ -67,18 +67,40 @@
 - Spring Boot: `8081`
 - 기타: `8082` 이상
 
-## 프론트엔드 연결
+## 테스트 방법
+
+### 1. Mock 서버로 테스트 (백엔드 없이)
 
 ```bash
-cd frontend
-# .env.local 파일 생성
-echo "NEXT_PUBLIC_API_URL=http://localhost:<본인포트>" > .env.local
+# 터미널 1: Mock 서버 실행
+cd mock-server
 npm install
+npm start   # http://localhost:4000
+
+# 터미널 2: 프론트엔드 실행
+cd frontend
+npm install
+echo "NEXT_PUBLIC_API_URL=http://localhost:4000" > .env.local
+npm run dev   # http://localhost:3000
+```
+
+### 2. 본인 백엔드로 테스트
+
+```bash
+# 터미널 1: 본인 백엔드 실행
+cd backend-<본인이름>
+# 각자 언어/프레임워크에 맞게 실행
+
+# 터미널 2: 프론트엔드 실행
+cd frontend
+npm install
+echo "NEXT_PUBLIC_API_URL=http://localhost:<본인포트>" > .env.local
 npm run dev
 ```
 
 ## 참고 자료
 
-- `backend-template-go-echo/` - Go+Echo 템플릿
-- `backend-template-springboot/` - Spring Boot 템플릿
+- `backend-template-go-echo/` - Go+Echo 템플릿 (auth.go 스켈레톤 포함)
+- `backend-template-springboot/` - Spring Boot 템플릿 (AuthController.java 스켈레톤 포함)
 - `mock-server/` - Mock API 서버 (프론트 테스트용)
+- `frontend/` - 2주차 프론트엔드 (로그인/회원가입)
