@@ -22,10 +22,6 @@ async fn route_not_found() -> ApiError {
     ApiError::NotFound("요청한 경로를 찾을 수 없습니다.".to_string())
 }
 
-async fn method_not_allowed() -> ApiError {
-    ApiError::MethodNotAllowed("지원하지 않는 HTTP 메서드입니다.".to_string())
-}
-
 #[tokio::main]
 async fn main() {
     let state = AppState::default();
@@ -56,7 +52,6 @@ async fn main() {
         .route("/todos/{todoId}", delete(todo::delete_todo).get(todo::get_todo).patch(todo::update_todo))
         .route("/files", post(file::upload_file).layer(DefaultBodyLimit::max(6 * 1024 * 1024))) // 6MB 제한
         .route("/files/{fileId}", get(file::download_file).delete(file::delete_file))
-        .method_not_allowed_fallback(method_not_allowed)
         .fallback(route_not_found)
         .layer(cors)
         .with_state(state);
