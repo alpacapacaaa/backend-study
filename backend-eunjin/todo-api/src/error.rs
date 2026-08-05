@@ -10,7 +10,6 @@ use serde::Serialize;
 pub enum ApiError {
     InvalidInput(String),
     NotFound(String),
-    MethodNotAllowed(String),
     InternalError(String),
 }
 
@@ -42,7 +41,6 @@ impl IntoResponse for ApiError {
         let (status, error) = match self {
             ApiError::InvalidInput(message) => (StatusCode::BAD_REQUEST, message),
             ApiError::NotFound(message) => (StatusCode::NOT_FOUND, message),
-            ApiError::MethodNotAllowed(message) => (StatusCode::METHOD_NOT_ALLOWED, message),
             ApiError::InternalError(message) => (StatusCode::INTERNAL_SERVER_ERROR, message),
         };
 
