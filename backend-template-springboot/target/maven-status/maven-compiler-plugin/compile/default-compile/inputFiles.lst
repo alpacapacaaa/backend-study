@@ -1,8 +1,0 @@
-/Users/bagseon-ung/backend-study/backend-template-springboot/src/main/java/com/backendstudy/template/ApiException.java
-/Users/bagseon-ung/backend-study/backend-template-springboot/src/main/java/com/backendstudy/template/BackendTemplateApplication.java
-/Users/bagseon-ung/backend-study/backend-template-springboot/src/main/java/com/backendstudy/template/ErrorResponse.java
-/Users/bagseon-ung/backend-study/backend-template-springboot/src/main/java/com/backendstudy/template/FileController.java
-/Users/bagseon-ung/backend-study/backend-template-springboot/src/main/java/com/backendstudy/template/GlobalExceptionHandler.java
-/Users/bagseon-ung/backend-study/backend-template-springboot/src/main/java/com/backendstudy/template/Todo.java
-/Users/bagseon-ung/backend-study/backend-template-springboot/src/main/java/com/backendstudy/template/TodoController.java
-/Users/bagseon-ung/backend-study/backend-template-springboot/src/main/java/com/backendstudy/template/WebConfig.java
